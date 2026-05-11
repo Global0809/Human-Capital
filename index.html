@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI University | Human Capital Deployment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #000000;
+            --bg-panel: #0a0a0a;
+            --border-color: #222222;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --tesla-red: #e31937;
+            --tesla-silver: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .dashboard {
+            max-width: 1280px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .header p {
+            color: var(--tesla-red);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .squad-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .squad-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .squad-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: #222;
+            transition: background 0.3s ease;
+        }
+
+        .squad-card:hover {
+            transform: translateY(-2px);
+            border-color: #444;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .squad-card:hover::before {
+            background: var(--tesla-red);
+        }
+
+        .squad-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .squad-icon {
+            color: var(--text-main);
+            font-size: 1.2rem;
+            margin-right: 1rem;
+            opacity: 0.8;
+        }
+
+        .squad-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .role-table {
+            width: 100%;
+            border-collapse: collapse;
+            flex-grow: 1;
+        }
+
+        .role-table th {
+            text-align: left;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            padding-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .role-table td {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #1a1a1a;
+            font-size: 0.95rem;
+        }
+
+        .role-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .count-badge {
+            background: transparent;
+            color: var(--tesla-red);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            display: inline-block;
+        }
+
+        .role-name {
+            font-weight: 500;
+            color: var(--tesla-silver);
+            display: block;
+        }
+
+        .role-salary {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .line-total {
+            text-align: right;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text-main);
+        }
+
+        .squad-footer {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .squad-total-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .squad-total-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--tesla-red);
+        }
+
+        .master-dashboard {
+            margin-top: 3rem;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 2.5rem;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: relative;
+        }
+
+        .master-dashboard::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--text-main);
+        }
+
+        .master-metric {
+            text-align: center;
+        }
+
+        .master-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .master-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .value-highlight {
+            color: var(--tesla-red);
+        }
+
+        .master-divider {
+            width: 1px;
+            height: 60px;
+            background: var(--border-color);
+        }
+
+        .agency-note {
+            background: rgba(227, 25, 55, 0.05);
+            border-left: 2px solid var(--tesla-red);
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .master-dashboard {
+                flex-direction: column;
+                gap: 2rem;
+                padding: 2rem 1rem;
+            }
+            .master-divider {
+                width: 100%;
+                height: 1px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <div class="header">
+            <h1>HUMAN CAPITAL & PAYROLL ARCHITECTURE</h1>
+            <p>Phase 1 Operational Roster & Monthly Burn (Delhi NCR)</p>
+        </div>
+
+        <div class="squad-grid">
+            
+            <!-- Growth & Brand -->
+            <div class="squad-card marketing">
+                <div class="squad-header">
+                    <div class="squad-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="squad-title">Growth & Brand Marketing</div>
+                </div>
+                <table class="role-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%">Qty</th>
+                            <th style="width: 55%">Role & Unit Salary</th>
+                            <th style="width: 30%; text-align: right;">Total / Mo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="count-badge">1</span></td>
+                            <td>
+                                <span class="role-name">Head of Performance Marketing</span>
+                                <span class="role-salary">₹30,000 base</span>
+                            </td>
+                            <td class="line-total">₹30,000</td>
+                        </tr>
+                        <tr>
+                            <td><span class="count-badge">1</span></td>
+                            <td>
+                                <span class="role-name">Digital Content Strategist</span>
+                                <span class="role-salary">₹25,000 base (Ad Creatives)</span>
+                            </td>
+                            <td class="line-total">₹25,000</td>
+                        </tr>
+                        <tr>
+                            <td><span class="count-badge">1</span></td>
+                            <td>
+                                <span class="role-name">Social Media Growth Lead</span>
+                                <span class="role-salary">₹20,000 base (IG Creator)</span>
+                            </td>
+                            <td class="line-total">₹20,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="squad-footer">
+                    <span class="squad-total-label">Squad Monthly Burn</span>
+                    <span class="squad-total-value">₹75,000</span>
+                </div>
+            </div>
+
+            <!-- Revenue Acquisition -->
+            <div class="squad-card sales">
+                <div class="squad-header">
+                    <div class="squad-icon"><i class="fa-solid fa-handshake"></i></div>
+                    <div class="squad-title">Revenue Acquisition</div>
+                </div>
+                <table class="role-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%">Qty</th>
+                            <th style="width: 55%">Role & Unit Salary</th>
+                            <th style="width: 30%; text-align: right;">Total / Mo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="count-badge">2</span></td>
+                            <td>
+                                <span class="role-name">High-Ticket Admissions Advisors</span>
+                                <span class="role-salary">₹25,000 base (Counselors)</span>
+                            </td>
+                            <td class="line-total">₹50,000</td>
+                        </tr>
+                        <tr>
+                            <td><span class="count-badge">5</span></td>
+                            <td>
+                                <span class="role-name">Outbound Acquisition Specialists</span>
+                                <span class="role-salary">₹20,000 base (Sales Managers)</span>
+                            </td>
+                            <td class="line-total">₹1,00,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="squad-footer">
+                    <span class="squad-total-label">Fixed Monthly Base</span>
+                    <span class="squad-total-value">₹1,50,000</span>
+                </div>
+            </div>
+
+            <!-- Academic Delivery -->
+            <div class="squad-card academic">
+                <div class="squad-header">
+                    <div class="squad-icon"><i class="fa-solid fa-microchip"></i></div>
+                    <div class="squad-title">Academic Delivery</div>
+                </div>
+                <table class="role-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%">Qty</th>
+                            <th style="width: 55%">Role & Unit Salary</th>
+                            <th style="width: 30%; text-align: right;">Total / Mo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="count-badge">3</span></td>
+                            <td>
+                                <span class="role-name">Lead AI Instructors</span>
+                                <span class="role-salary">₹40,000 base (Teachers)</span>
+                            </td>
+                            <td class="line-total">₹1,20,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="squad-footer" style="margin-top: auto;">
+                    <span class="squad-total-label">Squad Monthly Burn</span>
+                    <span class="squad-total-value">₹1,20,000</span>
+                </div>
+            </div>
+
+            <!-- Internal Agency -->
+            <div class="squad-card agency">
+                <div class="squad-header">
+                    <div class="squad-icon"><i class="fa-solid fa-photo-film"></i></div>
+                    <div class="squad-title">Agency & Production</div>
+                </div>
+                <table class="role-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%">Qty</th>
+                            <th style="width: 55%">Role & Unit Salary</th>
+                            <th style="width: 30%; text-align: right;">Total / Mo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="count-badge">15</span></td>
+                            <td>
+                                <span class="role-name">Post-Production Specialists</span>
+                                <span class="role-salary">₹18,000 base (Editors)</span>
+                            </td>
+                            <td class="line-total">₹2,70,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="agency-note">
+                    <strong>Margin Expansion Strategy:</strong> This 15-person payroll block (₹2.7L/mo) will be strategically eliminated in Q3. Music video and client workloads will transition to top-tier Academy students, acting as high-value internships while driving our labor costs to zero.
+                </div>
+                <div class="squad-footer">
+                    <span class="squad-total-label">Squad Monthly Burn</span>
+                    <span class="squad-total-value">₹2,70,000</span>
+                </div>
+            </div>
+
+            <!-- Campus Operations -->
+            <div class="squad-card ops">
+                <div class="squad-header">
+                    <div class="squad-icon"><i class="fa-solid fa-server"></i></div>
+                    <div class="squad-title">Campus Operations</div>
+                </div>
+                <table class="role-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%">Qty</th>
+                            <th style="width: 55%">Role & Unit Salary</th>
+                            <th style="width: 30%; text-align: right;">Total / Mo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="count-badge">1</span></td>
+                            <td>
+                                <span class="role-name">Director of Campus Ops</span>
+                                <span class="role-salary">₹30,000 base (Ops Manager)</span>
+                            </td>
+                            <td class="line-total">₹30,000</td>
+                        </tr>
+                        <tr>
+                            <td><span class="count-badge">1</span></td>
+                            <td>
+                                <span class="role-name">IT Infrastructure Manager</span>
+                                <span class="role-salary">₹20,000 base (PC Manager)</span>
+                            </td>
+                            <td class="line-total">₹20,000</td>
+                        </tr>
+                        <tr>
+                            <td><span class="count-badge">1</span></td>
+                            <td>
+                                <span class="role-name">Administrative Coordinator</span>
+                                <span class="role-salary">₹15,000 base (Misc.)</span>
+                            </td>
+                            <td class="line-total">₹15,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="squad-footer">
+                    <span class="squad-total-label">Squad Monthly Burn</span>
+                    <span class="squad-total-value">₹65,000</span>
+                </div>
+            </div>
+
+            <!-- Facility Management -->
+            <div class="squad-card facility">
+                <div class="squad-header">
+                    <div class="squad-icon"><i class="fa-solid fa-building-shield"></i></div>
+                    <div class="squad-title">Facility Management</div>
+                </div>
+                <table class="role-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%">Qty</th>
+                            <th style="width: 55%">Role & Unit Salary</th>
+                            <th style="width: 30%; text-align: right;">Total / Mo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="count-badge">1</span></td>
+                            <td>
+                                <span class="role-name">Facility Security Officer</span>
+                                <span class="role-salary">₹15,000 base (Guard)</span>
+                            </td>
+                            <td class="line-total">₹15,000</td>
+                        </tr>
+                        <tr>
+                            <td><span class="count-badge">1</span></td>
+                            <td>
+                                <span class="role-name">Facility Operations Staff</span>
+                                <span class="role-salary">₹12,000 base (Housekeeping)</span>
+                            </td>
+                            <td class="line-total">₹12,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="squad-footer" style="margin-top: auto;">
+                    <span class="squad-total-label">Squad Monthly Burn</span>
+                    <span class="squad-total-value">₹27,000</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Master Dashboard -->
+        <div class="master-dashboard">
+            <div class="master-metric">
+                <div class="master-label">Total Staff Headcount</div>
+                <div class="master-value">33</div>
+            </div>
+            <div class="master-divider"></div>
+            <div class="master-metric">
+                <div class="master-label">Total Operational Burn</div>
+                <div class="master-value value-highlight">₹7,07,000<span style="font-size: 1.2rem; color: #6b7280; font-weight: 500;">/mo</span></div>
+            </div>
+            <div class="master-divider"></div>
+            <div class="master-metric">
+                <div class="master-label">Average Cost Per Employee</div>
+                <div class="master-value" style="font-size: 2rem;">₹21,424<span style="font-size: 1rem; color: #6b7280; font-weight: 500;">/mo</span></div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
